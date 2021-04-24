@@ -20,13 +20,13 @@
         </jdbcConnection>
 
         <!-- 对应生成的pojo所在包 -->
-        <javaModelGenerator targetPackage="com.htr.pojo" targetProject="src/main/java"/>
+        <javaModelGenerator targetPackage="com.htr.pojo" targetProject="foodie-mall-pojo/src/main/java"/>
 
 		<!-- 对应生成的mapper所在目录 -->
-        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources"/>
+        <sqlMapGenerator targetPackage="mapper" targetProject="foodie-mall-mapper/src/main/resources"/>
 
 		<!-- 配置mapper对应的java映射 -->
-        <javaClientGenerator targetPackage="com.htr.mapper" targetProject="src/main/java" type="XMLMAPPER"/>
+        <javaClientGenerator targetPackage="com.htr.mapper" targetProject="foodie-mall-mapper/src/main/java" type="XMLMAPPER"/>
 
         <!-- 数据库表 -->
         <table tableName="carousel"></table>
