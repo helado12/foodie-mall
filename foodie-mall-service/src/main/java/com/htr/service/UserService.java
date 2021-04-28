@@ -1,6 +1,7 @@
 package com.htr.service;
 
-import org.springframework.stereotype.Service;
+import com.htr.pojo.Users;
+import com.htr.pojo.bo.UserBO;
 
 /**
  * @Author: T. He
@@ -10,5 +11,6 @@ import org.springframework.stereotype.Service;
 public interface UserService {
     public boolean queryUsernameIsExist(String username);
 
+    public Users createUser(UserBO userBo);
 
 }
