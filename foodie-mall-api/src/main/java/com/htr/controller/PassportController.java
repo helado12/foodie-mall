@@ -3,6 +3,8 @@ package com.htr.controller;
 import com.htr.pojo.bo.UserBO;
 import com.htr.service.UserService;
 import com.htr.utils.HtrJSONResult;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author: T. He
  * @Date: 2021/4/26
  */
+@Api(value = "login and register", tags = {"User login and register"})
 @RestController
 @RequestMapping("passport")
 public class PassportController {
@@ -19,6 +22,7 @@ public class PassportController {
     @Autowired
     private UserService userService;
 
+    @ApiOperation(value = "if username exists?", notes = "if username exists?", httpMethod = "GET")
     @GetMapping("/usernameIsExit")
     public HtrJSONResult usernameIsExit(@RequestParam String username){
         if (StringUtils.isBlank(username)){
@@ -33,6 +37,7 @@ public class PassportController {
         return HtrJSONResult.ok();
     }
 
+    @ApiOperation(value = "user register", notes = "user register", httpMethod = "POST")
     @PostMapping("/regist")
     public HtrJSONResult regist(@RequestBody UserBO userBO){
         String username = userBO.getUsername();
