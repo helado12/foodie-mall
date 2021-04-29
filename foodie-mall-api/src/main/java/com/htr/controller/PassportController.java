@@ -23,7 +23,7 @@ public class PassportController {
     private UserService userService;
 
     @ApiOperation(value = "if username exists?", notes = "if username exists?", httpMethod = "GET")
-    @GetMapping("/usernameIsExit")
+    @GetMapping("/usernameIsExist")
     public HtrJSONResult usernameIsExit(@RequestParam String username){
         if (StringUtils.isBlank(username)){
             return HtrJSONResult.errorMsg("Username is empty");
