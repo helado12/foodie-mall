@@ -36,15 +36,19 @@ spring:
     multipart:
       max-file-size: 512000     # 文件上传大小限制为500kb
       max-request-size: 512000  # 请求大小限制为500kb
-  mybatis:
-    type-aliases-package: com.htr.pojo          # 所有POJO类所在包路径
-    mapper-locations: classpath:mapper/*.xml      # mapper映射文件
 
-  mapper:
-    mappers: com.htr.my.mapper.MyMapper
-    not-empty: false    # 在进行数据库操作的的时候，判断表达式 username != null, 是否追加 username != ''
-    identity: MYSQL
-  # 分页插件配置
-  pagehelper:
-    helperDialect: mysql
-    supportMethodsArguments: true
+mybatis:
+  type-aliases-package: com.htr.pojo          # 所有POJO类所在包路径
+  mapper-locations: classpath:mapper/*.xml      # mapper映射文件
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+mapper:
+  mappers: com.htr.my.mapper.MyMapper
+  not-empty: false    # 在进行数据库操作的的时候，判断表达式 username != null, 是否追加 username != ''
+  identity: MYSQL
+# 分页插件配置
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
