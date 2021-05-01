@@ -2,12 +2,17 @@ package com.htr.service.impl;
 
 import com.htr.mapper.CarouselMapper;
 import com.htr.mapper.CategoryMapper;
+import com.htr.mapper.CategoryMapperCustom;
 import com.htr.pojo.Carousel;
 import com.htr.pojo.Category;
+import com.htr.pojo.vo.CategoryVo;
+import com.htr.pojo.vo.SubCategoryVo;
 import com.htr.service.CarouselService;
 import com.htr.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
@@ -23,7 +28,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private CategoryMapperCustom categoryMapperCustom;
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<Category> queryAllRootLevelCat() {
         Example example = new Example(Category.class);
@@ -36,4 +44,12 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<CategoryVo> getSubCatList(Integer rootCatId) {
+        return categoryMapperCustom.getSubCatList(rootCatId);
+    }
+
+
 }

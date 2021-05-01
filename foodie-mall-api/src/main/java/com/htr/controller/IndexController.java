@@ -3,15 +3,18 @@ package com.htr.controller;
 import com.htr.enums.YesOrNo;
 import com.htr.pojo.Carousel;
 import com.htr.pojo.Category;
+import com.htr.pojo.vo.CategoryVo;
 import com.htr.service.CarouselService;
 import com.htr.service.CategoryService;
 import com.htr.utils.HtrJSONResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -55,4 +58,15 @@ public class IndexController {
         return HtrJSONResult.ok(list);
     }
 
+    @ApiOperation(value = "obtain index page subcategory", notes = "obtain index page subcategory", httpMethod = "GET")
+    @GetMapping("/subCat/{rootCatId}")
+    public HtrJSONResult cats(
+            @ApiParam(name = "rootCatId", value = "primary category id", required = true)
+            @PathVariable Integer rootCatId){
+        if (rootCatId == null){
+            return HtrJSONResult.errorMsg("Category does not exits");
+        }
+        List<CategoryVo> list = categoryService.getSubCatList(rootCatId);
+        return HtrJSONResult.ok(list);
+    }
 }
