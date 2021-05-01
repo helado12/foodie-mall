@@ -4,6 +4,7 @@ import com.htr.enums.YesOrNo;
 import com.htr.pojo.Carousel;
 import com.htr.pojo.Category;
 import com.htr.pojo.vo.CategoryVo;
+import com.htr.pojo.vo.NewItemsVo;
 import com.htr.service.CarouselService;
 import com.htr.service.CategoryService;
 import com.htr.utils.HtrJSONResult;
@@ -67,6 +68,18 @@ public class IndexController {
             return HtrJSONResult.errorMsg("Category does not exits");
         }
         List<CategoryVo> list = categoryService.getSubCatList(rootCatId);
+        return HtrJSONResult.ok(list);
+    }
+
+    @ApiOperation(value = "obtain six latest items for each primary category", notes = "obtain six latest items for each primary category", httpMethod = "GET")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public HtrJSONResult sixNewItems(
+            @ApiParam(name = "rootCatId", value = "primary category id", required = true)
+            @PathVariable Integer rootCatId){
+        if (rootCatId == null){
+            return HtrJSONResult.errorMsg("Category does not exits");
+        }
+        List<NewItemsVo> list = categoryService.getSixNewItemsLazy(rootCatId);
         return HtrJSONResult.ok(list);
     }
 }

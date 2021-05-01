@@ -6,6 +6,7 @@ import com.htr.mapper.CategoryMapperCustom;
 import com.htr.pojo.Carousel;
 import com.htr.pojo.Category;
 import com.htr.pojo.vo.CategoryVo;
+import com.htr.pojo.vo.NewItemsVo;
 import com.htr.pojo.vo.SubCategoryVo;
 import com.htr.service.CarouselService;
 import com.htr.service.CategoryService;
@@ -15,7 +16,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: T. He
@@ -51,5 +54,13 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapperCustom.getSubCatList(rootCatId);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<NewItemsVo> getSixNewItemsLazy(Integer rootCatId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("rootCatId", rootCatId);
+
+        return categoryMapperCustom.getSixNewItemsLazy(map);
+    }
 
 }
