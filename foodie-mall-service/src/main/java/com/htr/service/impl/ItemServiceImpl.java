@@ -7,6 +7,7 @@ import com.htr.mapper.*;
 import com.htr.pojo.*;
 import com.htr.pojo.vo.CommentLevelCountsVo;
 import com.htr.pojo.vo.ItemCommentVo;
+import com.htr.pojo.vo.SearchItemsVO;
 import com.htr.service.ItemService;
 import com.htr.utils.DesensitizationUtil;
 import com.htr.utils.PagedGridResult;
@@ -95,6 +96,7 @@ public class ItemServiceImpl implements ItemService {
         return countsVo;
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public PagedGridResult queryPagedComments(String itemId, Integer level,
                                               Integer page, Integer pageSize) {
@@ -107,6 +109,19 @@ public class ItemServiceImpl implements ItemService {
         for (ItemCommentVo vo: list){
             vo.setNickname(DesensitizationUtil.commonDisplay(vo.getNickname()));
         }
+        return setterPagedGrid(list, page);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("keyword", keywords);
+        map.put("sort", sort);
+
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemsVO> list = itemsMapperCustom.searchItems(map);
+
         return setterPagedGrid(list, page);
     }
 

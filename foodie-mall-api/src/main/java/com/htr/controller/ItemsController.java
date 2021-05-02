@@ -96,4 +96,29 @@ public class ItemsController extends BaseController{
         return HtrJSONResult.ok(grid);
     }
 
+    @ApiOperation(value = "search item by item name", notes = "search item by item name", httpMethod = "GET")
+    @GetMapping("/search")
+    public HtrJSONResult search(
+            @ApiParam(name = "keywords", value = "keywords", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "sort", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "search for a specific page", required = false)
+            @RequestParam  Integer page,
+            @ApiParam(name = "pageSize", value = "number of comments for each page", required = false)
+            @RequestParam Integer pageSize){
+        if (StringUtils.isBlank(keywords)){
+            return HtrJSONResult.errorMsg(null);
+        }
+        if (page == null){
+            page = 1;
+        }
+        if (pageSize == null){
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.searchItems(keywords, sort, page, pageSize);
+
+        return HtrJSONResult.ok(grid);
+    }
 }
