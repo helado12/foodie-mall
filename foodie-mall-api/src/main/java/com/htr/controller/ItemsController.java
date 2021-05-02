@@ -121,4 +121,30 @@ public class ItemsController extends BaseController{
 
         return HtrJSONResult.ok(grid);
     }
+
+    @ApiOperation(value = "search item by category id", notes = "search item by category id", httpMethod = "GET")
+    @GetMapping("/catItems")
+    public HtrJSONResult search(
+            @ApiParam(name = "catId", value = "third level cateogry id", required = true)
+            @RequestParam Integer catId,
+            @ApiParam(name = "sort", value = "sort", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "search for a specific page", required = false)
+            @RequestParam  Integer page,
+            @ApiParam(name = "pageSize", value = "number of comments for each page", required = false)
+            @RequestParam Integer pageSize){
+        if (catId == null){
+            return HtrJSONResult.errorMsg(null);
+        }
+        if (page == null){
+            page = 1;
+        }
+        if (pageSize == null){
+            pageSize = PAGE_SIZE;
+        }
+
+        PagedGridResult grid = itemService.searchItems(catId, sort, page, pageSize);
+
+        return HtrJSONResult.ok(grid);
+    }
 }
