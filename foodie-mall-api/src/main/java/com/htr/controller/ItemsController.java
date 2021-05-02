@@ -2,10 +2,7 @@ package com.htr.controller;
 
 import com.htr.enums.YesOrNo;
 import com.htr.pojo.*;
-import com.htr.pojo.vo.CategoryVo;
-import com.htr.pojo.vo.CommentLevelCountsVo;
-import com.htr.pojo.vo.ItemInfoVo;
-import com.htr.pojo.vo.NewItemsVo;
+import com.htr.pojo.vo.*;
 import com.htr.service.CarouselService;
 import com.htr.service.CategoryService;
 import com.htr.service.ItemService;
@@ -146,5 +143,18 @@ public class ItemsController extends BaseController{
         PagedGridResult grid = itemService.searchItems(catId, sort, page, pageSize);
 
         return HtrJSONResult.ok(grid);
+    }
+
+    @ApiOperation(value = "search latest item info using itemSpecId", notes = "search latest item info using itemSpecId", httpMethod = "GET")
+    @GetMapping("/refresh")
+    public HtrJSONResult search(
+            @ApiParam(name = "itemSpecIds", value = "a string of all itemSpecId separated by comma", required = true, example = "1001, 1003, 1005")
+            @RequestParam String itemSpecIds){
+        if (StringUtils.isBlank(itemSpecIds)){
+            return HtrJSONResult.ok();
+        }
+
+        List<ShopcartVO> list = itemService.queryItemsBySpecIds(itemSpecIds);
+        return HtrJSONResult.ok(list);
     }
 }

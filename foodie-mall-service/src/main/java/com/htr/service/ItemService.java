@@ -2,6 +2,7 @@ package com.htr.service;
 
 import com.htr.pojo.*;
 import com.htr.pojo.vo.CommentLevelCountsVo;
+import com.htr.pojo.vo.ShopcartVO;
 import com.htr.utils.PagedGridResult;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface ItemService {
 
     public PagedGridResult searchItems(Integer catId, String sort,
                                        Integer page, Integer pageSize);
+
+    public List<ShopcartVO> queryItemsBySpecIds(String specsId);
 }
