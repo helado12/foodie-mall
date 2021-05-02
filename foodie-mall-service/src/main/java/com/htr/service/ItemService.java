@@ -2,6 +2,7 @@ package com.htr.service;
 
 import com.htr.pojo.*;
 import com.htr.pojo.vo.CommentLevelCountsVo;
+import com.htr.utils.PagedGridResult;
 
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface ItemService {
     public ItemsParam queryItemParam(String itemId);
 
     public CommentLevelCountsVo queryCommentCounts(String itemId);
+
+    public PagedGridResult queryPagedComments(String itemId, Integer level,
+                                              Integer page, Integer pageSize);
 }
