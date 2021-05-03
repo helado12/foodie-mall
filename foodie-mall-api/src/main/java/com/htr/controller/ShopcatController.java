@@ -39,4 +39,20 @@ public class ShopcatController {
         //TODO 前端用户在登录的情况下，添加商品到购物车，会同时在后端同步购物车到redis缓存
         return HtrJSONResult.ok();
     }
+
+    @ApiOperation(value = "delete item from shopping cart", notes = "delete item from shopping cart", httpMethod = "POST")
+    @PostMapping("/del")
+    public HtrJSONResult add(
+            @RequestParam String userId,
+            @RequestParam String itemSpecId,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ){
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(itemSpecId)){
+            return HtrJSONResult.errorMsg("");
+        }
+        //TODO 前端用户在登录的情况下，删除购物车中的商品，需在后端同步删除购物车商品
+        return HtrJSONResult.ok();
+    }
 }
