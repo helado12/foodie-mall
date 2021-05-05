@@ -3,6 +3,7 @@ package com.htr.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.htr.enums.CommentLevel;
+import com.htr.enums.YesOrNo;
 import com.htr.mapper.*;
 import com.htr.pojo.*;
 import com.htr.pojo.vo.CommentLevelCountsVo;
@@ -115,7 +116,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
         Map<String, Object> map = new HashMap<>();
-        map.put("keyword", keywords);
+        map.put("keywords", keywords);
         map.put("sort", sort);
 
         PageHelper.startPage(page, pageSize);
@@ -137,12 +138,38 @@ public class ItemServiceImpl implements ItemService {
         return setterPagedGrid(list, page);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<ShopcartVO> queryItemsBySpecIds(String specsId) {
         String ids[] = specsId.split(",");
         List<String> specIdsList = new ArrayList<>();
         Collections.addAll(specIdsList, ids);
         return itemsMapperCustom.queryItemsBySpecIds(specIdsList);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsSpec queryItemSpecById(String specId) {
+        return itemsSpecMapper.selectByPrimaryKey(specId);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public String queryItemMainImgById(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setItemId(itemId);
+        itemsImg.setIsMain(YesOrNo.YES.type);
+        ItemsImg result = itemsImgMapper.selectOne(itemsImg);
+        return result != null ? result.getUrl() : "";
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String specId, int buyCounts) {
+        int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
+        if (result != 1){
+            throw new RuntimeException("Fail to create an order: sold out");
+        }
     }
 
     private PagedGridResult setterPagedGrid(List<?> list, Integer page){

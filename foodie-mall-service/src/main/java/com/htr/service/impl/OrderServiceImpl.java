@@ -1,0 +1,125 @@
+package com.htr.service.impl;
+
+import com.htr.enums.OrderStatusEnum;
+import com.htr.enums.YesOrNo;
+import com.htr.mapper.CarouselMapper;
+import com.htr.mapper.OrderItemsMapper;
+import com.htr.mapper.OrderStatusMapper;
+import com.htr.mapper.OrdersMapper;
+import com.htr.pojo.*;
+import com.htr.pojo.bo.SubmitOrderBO;
+import com.htr.service.AddressService;
+import com.htr.service.CarouselService;
+import com.htr.service.ItemService;
+import com.htr.service.OrderService;
+import org.aspectj.weaver.ast.Or;
+import org.n3r.idworker.Sid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Author: T. He
+ * @Date: 2021/4/30
+ */
+
+@Service
+public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private OrdersMapper ordersMapper;
+    @Autowired
+    private OrderItemsMapper orderItemsMapper;
+    @Autowired
+    private OrderStatusMapper orderStatusMapper;
+    @Autowired
+    private Sid sid;
+    @Autowired
+    private AddressService addressService;
+    @Autowired
+    private ItemService itemService;
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public void createOrder(SubmitOrderBO submitOrderBO) {
+        String userId = submitOrderBO.getUserId();
+        String addressId = submitOrderBO.getAddressId();
+        String itemSpecIds = submitOrderBO.getItemSpecIds();
+        Integer payMethod = submitOrderBO.getPayMethod();
+        String leftMsg = submitOrderBO.getLeftMsg();
+        Integer postAmount = 0;
+
+        String orderId = sid.nextShort();
+
+        UserAddress address = addressService.queryUserAddress(userId, addressId);
+
+        //1. create order
+        Orders newOrder = new Orders();
+        newOrder.setId(orderId);
+        newOrder.setUserId(userId);
+
+        newOrder.setReceiverName(address.getReceiver());
+        newOrder.setReceiverMobile(address.getMobile());
+        newOrder.setReceiverAddress(address.getProvince() + " "
+                                    + address.getCity() + " "
+                                    + address.getDistrict() + " "
+                                    + address.getDetail());
+        newOrder.setPostAmount(postAmount);
+
+        newOrder.setPayMethod(payMethod);
+        newOrder.setLeftMsg(leftMsg);
+        newOrder.setIsComment(YesOrNo.NO.type);
+        newOrder.setIsDelete(YesOrNo.NO.type);
+        newOrder.setCreatedTime(new Date());
+        newOrder.setUpdatedTime(new Date());
+
+        //2. get item details fro itemSpecIds
+        String itemSpecIdArr[] = itemSpecIds.split(",");
+        Integer totalAmount = 0;
+        Integer realPayAmount = 0;
+        for (String itemSpecId: itemSpecIdArr){
+            // TODO obtain number of each items in the shopping cart from shopping cart in redis
+            int buyCounts = 1;
+            ItemsSpec itemSpec = itemService.queryItemSpecById(itemSpecId);
+            totalAmount += itemSpec.getPriceNormal() * buyCounts;
+            realPayAmount += itemSpec.getPriceDiscount() * buyCounts;
+
+            String itemId = itemSpec.getItemId();
+            Items item = itemService.queryItemById(itemId);
+            String imgUrl = itemService.queryItemMainImgById(itemId);
+
+            String subOrderId = sid.nextShort();
+            OrderItems subOrderItem = new OrderItems();
+            subOrderItem.setId(subOrderId);
+            subOrderItem.setOrderId(orderId);
+            subOrderItem.setItemId(itemId);
+            subOrderItem.setItemName(item.getItemName());
+            subOrderItem.setItemImg(imgUrl);
+            subOrderItem.setBuyCounts(buyCounts);
+            subOrderItem.setItemSpecId(itemSpecId);
+            subOrderItem.setItemSpecName(itemSpec.getName());
+            subOrderItem.setPrice(itemSpec.getPriceDiscount());
+
+            orderItemsMapper.insert(subOrderItem);
+            itemService.decreaseItemSpecStock(itemSpecId, buyCounts);
+
+        }
+
+        newOrder.setTotalAmount(totalAmount);
+        newOrder.setRealPayAmount(realPayAmount);
+        ordersMapper.insert(newOrder);
+
+        //3. set order status table
+        OrderStatus waitPayOrderStatus = new OrderStatus();
+        waitPayOrderStatus.setOrderId(orderId);
+        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        waitPayOrderStatus.setCreatedTime(new Date());
+        orderStatusMapper.insert(waitPayOrderStatus);
+    }
+}
