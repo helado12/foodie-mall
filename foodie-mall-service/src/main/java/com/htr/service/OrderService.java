@@ -1,6 +1,7 @@
 package com.htr.service;
 
 import com.htr.pojo.Carousel;
+import com.htr.pojo.OrderStatus;
 import com.htr.pojo.bo.SubmitOrderBO;
 import com.htr.pojo.vo.OrderVO;
 
@@ -15,4 +16,6 @@ public interface OrderService {
     public OrderVO createOrder(SubmitOrderBO submitOrderBO);
 
     public void updateOrderStatus(String orderId, Integer orderStatus);
+
+    public OrderStatus queryOrderStatusInfo(String orderId);
 }

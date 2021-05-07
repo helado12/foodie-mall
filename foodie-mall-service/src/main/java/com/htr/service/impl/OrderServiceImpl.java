@@ -120,7 +120,8 @@ public class OrderServiceImpl implements OrderService {
         //3. set order status table
         OrderStatus waitPayOrderStatus = new OrderStatus();
         waitPayOrderStatus.setOrderId(orderId);
-        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        //directly set payment is completed; payment center is completed
+        waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_DELIVER.type);
         waitPayOrderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(waitPayOrderStatus);
 
@@ -148,5 +149,10 @@ public class OrderServiceImpl implements OrderService {
 
         orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
 
+    }
+
+    @Override
+    public OrderStatus queryOrderStatusInfo(String orderId) {
+        return orderStatusMapper.selectByPrimaryKey(orderId);
     }
 }
