@@ -14,6 +14,7 @@ import com.htr.service.AddressService;
 import com.htr.service.CarouselService;
 import com.htr.service.ItemService;
 import com.htr.service.OrderService;
+import com.htr.utils.DateUtil;
 import org.aspectj.weaver.ast.Or;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,5 +155,31 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderStatus queryOrderStatusInfo(String orderId) {
         return orderStatusMapper.selectByPrimaryKey(orderId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void closeOrder() {
+
+        OrderStatus queryOrder = new OrderStatus();
+        queryOrder.setOrderStatus((OrderStatusEnum.WAIT_PAY.type));
+        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
+        for (OrderStatus os: list){
+            Date createdTime = os.getCreatedTime();
+            int days = DateUtil.daysBetween(createdTime, new Date());
+            if (days > 1){
+                doCloseOrder(os.getOrderId());
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    void doCloseOrder(String orderId){
+        OrderStatus close = new OrderStatus();
+        close.setOrderId(orderId);
+        close.setOrderStatus(OrderStatusEnum.CLOSE.type);
+        close.setCloseTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(close);
+
     }
 }

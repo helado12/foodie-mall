@@ -18,4 +18,6 @@ public interface OrderService {
     public void updateOrderStatus(String orderId, Integer orderStatus);
 
     public OrderStatus queryOrderStatusInfo(String orderId);
+
+    public void closeOrder();
 }
