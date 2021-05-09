@@ -25,7 +25,7 @@ public class BaseController {
     String payReturnUrl = "http://localhost:8088/orders/notifyMerchantOrderPaid";
 
     // 用户上传头像的位置
-    public static final String IMAGE_USER_FACE_LOCATION = File.separator + "workspaces" +
+    public static final String IMAGE_USER_FACE_LOCATION =   File.separator + "workspaces" +
                                                             File.separator + "images" +
                                                             File.separator + "foodie" +
                                                             File.separator + "faces";

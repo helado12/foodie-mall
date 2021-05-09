@@ -4,6 +4,7 @@ import com.htr.controller.BaseController;
 import com.htr.pojo.Users;
 import com.htr.pojo.bo.center.CenterUserBO;
 //import com.htr.resource.FileUpload;
+import com.htr.resource.FileUpload;
 import com.htr.service.UserService;
 import com.htr.service.center.CenterUserService;
 import com.htr.utils.CookieUtils;
@@ -40,84 +41,84 @@ public class CenterUserController extends BaseController {
     @Autowired
     private CenterUserService centerUserService;
 
-//    @Autowired
-//    private FileUpload fileUpload;
+    @Autowired
+    private FileUpload fileUpload;
 
-//    @ApiOperation(value = "用户头像修改", notes = "用户头像修改", httpMethod = "POST")
-//    @PostMapping("uploadFace")
-//    public HtrJSONResult uploadFace(
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId,
-//            @ApiParam(name = "file", value = "用户头像", required = true)
-//            MultipartFile file,
-//            HttpServletRequest request, HttpServletResponse response) {
-//
-//        // .sh .php
-//
-//        // 定义头像保存的地址
-////        String fileSpace = IMAGE_USER_FACE_LOCATION;
-//        String fileSpace = fileUpload.getImageUserFaceLocation();
-//        // 在路径上为每一个用户增加一个userid，用于区分不同用户上传
-//        String uploadPathPrefix = File.separator + userId;
-//
-//        // 开始文件上传
-//        if (file != null) {
-//            FileOutputStream fileOutputStream = null;
-//            try {
-//                // 获得文件上传的文件名称
-//                String fileName = file.getOriginalFilename();
-//
-//                if (StringUtils.isNotBlank(fileName)) {
-//
-//                    // 文件重命名  htr-face.png -> ["htr-face", "png"]
-//                    String fileNameArr[] = fileName.split("\\.");
-//
-//                    // 获取文件的后缀名
-//                    String suffix = fileNameArr[fileNameArr.length - 1];
-//
-//                    if (!suffix.equalsIgnoreCase("png") &&
-//                            !suffix.equalsIgnoreCase("jpg") &&
-//                            !suffix.equalsIgnoreCase("jpeg") ) {
-//                        return HtrJSONResult.errorMsg("图片格式不正确！");
-//                    }
-//
-//                    // face-{userid}.png
-//                    // 文件名称重组 覆盖式上传，增量式：额外拼接当前时间
-//                    String newFileName = "face-" + userId + "." + suffix;
-//
-//                    // 上传的头像最终保存的位置
-//                    String finalFacePath = fileSpace + uploadPathPrefix + File.separator + newFileName;
-//                    // 用于提供给web服务访问的地址
-//                    uploadPathPrefix += ("/" + newFileName);
-//
-//                    File outFile = new File(finalFacePath);
-//                    if (outFile.getParentFile() != null) {
-//                        // 创建文件夹
-//                        outFile.getParentFile().mkdirs();
-//                    }
-//
-//                    // 文件输出保存到目录
-//                    fileOutputStream = new FileOutputStream(outFile);
-//                    InputStream inputStream = file.getInputStream();
-//                    IOUtils.copy(inputStream, fileOutputStream);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                try {
-//                    if (fileOutputStream != null) {
-//                        fileOutputStream.flush();
-//                        fileOutputStream.close();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        } else {
-//            return HtrJSONResult.errorMsg("文件不能为空！");
-//        }
-//
+    @ApiOperation(value = "update user profile picture", notes = "update user profile picture", httpMethod = "POST")
+    @PostMapping("uploadFace")
+    public HtrJSONResult uploadFace(
+            @ApiParam(name = "userId", value = "userId", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "file", value = "user profile picture", required = true)
+            MultipartFile file,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        // .sh .php
+
+        // 定义头像保存的地址
+//        String fileSpace = IMAGE_USER_FACE_LOCATION;
+        String fileSpace = fileUpload.getImageUserFaceLocation();
+        // 在路径上为每一个用户增加一个userid，用于区分不同用户上传
+        String uploadPathPrefix = File.separator + userId;
+
+        // 开始文件上传
+        if (file != null) {
+            FileOutputStream fileOutputStream = null;
+            try {
+                // 获得文件上传的文件名称
+                String fileName = file.getOriginalFilename();
+
+                if (StringUtils.isNotBlank(fileName)) {
+
+                    // 文件重命名  htr-face.png -> ["htr-face", "png"]
+                    String fileNameArr[] = fileName.split("\\.");
+
+                    // 获取文件的后缀名
+                    String suffix = fileNameArr[fileNameArr.length - 1];
+
+                    if (!suffix.equalsIgnoreCase("png") &&
+                            !suffix.equalsIgnoreCase("jpg") &&
+                            !suffix.equalsIgnoreCase("jpeg") ) {
+                        return HtrJSONResult.errorMsg("incorrect image format！");
+                    }
+
+                    // face-{userid}.png
+                    // 文件名称重组 覆盖式上传，增量式：额外拼接当前时间
+                    String newFileName = "face-" + userId + "." + suffix;
+
+                    // 上传的头像最终保存的位置
+                    String finalFacePath = fileSpace + uploadPathPrefix + File.separator + newFileName;
+                    // 用于提供给web服务访问的地址
+                    uploadPathPrefix += ("/" + newFileName);
+
+                    File outFile = new File(finalFacePath);
+                    if (outFile.getParentFile() != null) {
+                        // 创建文件夹
+                        outFile.getParentFile().mkdirs();
+                    }
+
+                    // 文件输出保存到目录
+                    fileOutputStream = new FileOutputStream(outFile);
+                    InputStream inputStream = file.getInputStream();
+                    IOUtils.copy(inputStream, fileOutputStream);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else {
+            return HtrJSONResult.errorMsg("File should is empty！");
+        }
+
 //        // 获取图片服务地址
 //        String imageServerUrl = fileUpload.getImageServerUrl();
 //
@@ -133,9 +134,9 @@ public class CenterUserController extends BaseController {
 //                JsonUtils.objectToJson(userResult), true);
 //
 //        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
-//
-//        return HtrJSONResult.ok();
-//    }
+
+        return HtrJSONResult.ok();
+    }
 
 
 
