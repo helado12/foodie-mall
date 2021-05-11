@@ -123,6 +123,8 @@ public class OrderServiceImpl implements OrderService {
         waitPayOrderStatus.setOrderId(orderId);
         //directly set payment is completed; payment center is completed
         waitPayOrderStatus.setOrderStatus(OrderStatusEnum.WAIT_DELIVER.type);
+        waitPayOrderStatus.setPayTime(new Date());
+
         waitPayOrderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(waitPayOrderStatus);
 

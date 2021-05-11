@@ -159,14 +159,14 @@ public class MyOrdersController extends BaseController {
 //        return HtrJSONResult.ok();
 //    }
 //
-    @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
+    @ApiOperation(value = "query order trend", notes = "query order trend", httpMethod = "POST")
     @PostMapping("/trend")
     public HtrJSONResult trend(
-            @ApiParam(name = "userId", value = "用户id", required = true)
+            @ApiParam(name = "userId", value = "userId", required = true)
             @RequestParam String userId,
-            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @ApiParam(name = "page", value = "number of page", required = false)
             @RequestParam Integer page,
-            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @ApiParam(name = "pageSize", value = "number of trends in each page", required = false)
             @RequestParam Integer pageSize) {
 
         if (StringUtils.isBlank(userId)) {
