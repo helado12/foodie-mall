@@ -85,78 +85,78 @@ public class MyOrdersController extends BaseController {
 
         return HtrJSONResult.ok(grid);
     }
-//
-//
-//    // 商家发货没有后端，所以这个接口仅仅只是用于模拟
-//    @ApiOperation(value="商家发货", notes="商家发货", httpMethod = "GET")
-//    @GetMapping("/deliver")
-//    public HtrJSONResult deliver(
-//            @ApiParam(name = "orderId", value = "订单id", required = true)
-//            @RequestParam String orderId) throws Exception {
-//
-//        if (StringUtils.isBlank(orderId)) {
-//            return HtrJSONResult.errorMsg("订单ID不能为空");
-//        }
-//        myOrdersService.updateDeliverOrderStatus(orderId);
-//        return HtrJSONResult.ok();
-//    }
-//
-//
-//    @ApiOperation(value="用户确认收货", notes="用户确认收货", httpMethod = "POST")
-//    @PostMapping("/confirmReceive")
-//    public HtrJSONResult confirmReceive(
-//            @ApiParam(name = "orderId", value = "订单id", required = true)
-//            @RequestParam String orderId,
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId) throws Exception {
-//
-//        HtrJSONResult checkResult = checkUserOrder(userId, orderId);
-//        if (checkResult.getStatus() != HttpStatus.OK.value()) {
-//            return checkResult;
-//        }
-//
-//        boolean res = myOrdersService.updateReceiveOrderStatus(orderId);
-//        if (!res) {
-//            return HtrJSONResult.errorMsg("订单确认收货失败！");
-//        }
-//
-//        return HtrJSONResult.ok();
-//    }
-//
-//    @ApiOperation(value="用户删除订单", notes="用户删除订单", httpMethod = "POST")
-//    @PostMapping("/delete")
-//    public HtrJSONResult delete(
-//            @ApiParam(name = "orderId", value = "订单id", required = true)
-//            @RequestParam String orderId,
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId) throws Exception {
-//
-//        HtrJSONResult checkResult = checkUserOrder(userId, orderId);
-//        if (checkResult.getStatus() != HttpStatus.OK.value()) {
-//            return checkResult;
-//        }
-//
-//        boolean res = myOrdersService.deleteOrder(userId, orderId);
-//        if (!res) {
-//            return HtrJSONResult.errorMsg("订单删除失败！");
-//        }
-//
-//        return HtrJSONResult.ok();
-//    }
-//
-//
-//
-//    /**
-//     * 用于验证用户和订单是否有关联关系，避免非法用户调用
-//     * @return
-//     */
-////    private HtrJSONResult checkUserOrder(String userId, String orderId) {
-////        Orders order = myOrdersService.queryMyOrder(userId, orderId);
-////        if (order == null) {
-////            return HtrJSONResult.errorMsg("订单不存在！");
-////        }
-////        return HtrJSONResult.ok();
-////    }
+
+
+    // 商家发货没有后端，所以这个接口仅仅只是用于模拟
+    @ApiOperation(value="merchant dispatch item", notes="merchant dispatch item", httpMethod = "GET")
+    @GetMapping("/deliver")
+    public HtrJSONResult deliver(
+            @ApiParam(name = "orderId", value = "订单id", required = true)
+            @RequestParam String orderId) throws Exception {
+
+        if (StringUtils.isBlank(orderId)) {
+            return HtrJSONResult.errorMsg("订单ID不能为空");
+        }
+        myOrdersService.updateDeliverOrderStatus(orderId);
+        return HtrJSONResult.ok();
+    }
+
+
+    @ApiOperation(value="user confirm order received", notes="user confirm order received", httpMethod = "POST")
+    @PostMapping("/confirmReceive")
+    public HtrJSONResult confirmReceive(
+            @ApiParam(name = "orderId", value = "orderId", required = true)
+            @RequestParam String orderId,
+            @ApiParam(name = "userId", value = "userId", required = true)
+            @RequestParam String userId) throws Exception {
+
+        HtrJSONResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        boolean res = myOrdersService.updateReceiveOrderStatus(orderId);
+        if (!res) {
+            return HtrJSONResult.errorMsg("Fail to confirm receiving order！");
+        }
+
+        return HtrJSONResult.ok();
+    }
+
+    @ApiOperation(value="User deletes order", notes="User deletes order", httpMethod = "POST")
+    @PostMapping("/delete")
+    public HtrJSONResult delete(
+            @ApiParam(name = "orderId", value = "orderId", required = true)
+            @RequestParam String orderId,
+            @ApiParam(name = "userId", value = "userId", required = true)
+            @RequestParam String userId) throws Exception {
+
+        HtrJSONResult checkResult = checkUserOrder(userId, orderId);
+        if (checkResult.getStatus() != HttpStatus.OK.value()) {
+            return checkResult;
+        }
+
+        boolean res = myOrdersService.deleteOrder(userId, orderId);
+        if (!res) {
+            return HtrJSONResult.errorMsg("Fail to delete order！");
+        }
+
+        return HtrJSONResult.ok();
+    }
+
+
+
+    /**
+     * 用于验证用户和订单是否有关联关系，避免非法用户调用
+     * @return
+     */
+    private HtrJSONResult checkUserOrder(String userId, String orderId) {
+        Orders order = myOrdersService.queryMyOrder(userId, orderId);
+        if (order == null) {
+            return HtrJSONResult.errorMsg("Order does not exist！");
+        }
+        return HtrJSONResult.ok();
+    }
 //
 //    @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
 //    @PostMapping("/trend")
