@@ -11,6 +11,7 @@ import com.htr.pojo.bo.center.CenterUserBO;
 //import com.htr.pojo.bo.center.OrderItemsCommentBO;
 //import com.htr.pojo.vo.MyCommentVO;
 import com.htr.pojo.bo.center.OrderItemsCommentBO;
+import com.htr.pojo.vo.MyCommentVO;
 import com.htr.service.center.CenterUserService;
 import com.htr.service.center.MyCommentsService;
 import com.htr.utils.PagedGridResult;
@@ -78,19 +79,19 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
         orderStatus.setCommentTime(new Date());
         orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
-//
-//    @Transactional(propagation = Propagation.SUPPORTS)
-//    @Override
-//    public PagedGridResult queryMyComments(String userId,
-//                                           Integer page,
-//                                           Integer pageSize) {
-//
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("userId", userId);
-//
-//        PageHelper.startPage(page, pageSize);
-//        List<MyCommentVO> list = itemsCommentsMapperCustom.queryMyComments(map);
-//
-//        return setterPagedGrid(list, page);
-//    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedGridResult queryMyComments(String userId,
+                                           Integer page,
+                                           Integer pageSize) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        PageHelper.startPage(page, pageSize);
+        List<MyCommentVO> list = itemsCommentsMapperCustom.queryMyComments(map);
+
+        return setterPagedGrid(list, page);
+    }
 }

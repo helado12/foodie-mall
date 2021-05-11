@@ -2,6 +2,7 @@ package com.htr.service.center;
 
 import com.htr.pojo.Orders;
 //import com.htr.pojo.vo.OrderStatusCountsVO;
+import com.htr.pojo.vo.OrderStatusCountsVO;
 import com.htr.utils.PagedGridResult;
 
 public interface MyOrdersService {
@@ -49,20 +50,20 @@ public interface MyOrdersService {
      */
     public boolean deleteOrder(String userId, String orderId);
 
-//    /**
-//     * 查询用户订单数
-//     * @param userId
-//     */
-//    public OrderStatusCountsVO getOrderStatusCounts(String userId);
-//
-//    /**
-//     * 获得分页的订单动向
-//     * @param userId
-//     * @param page
-//     * @param pageSize
-//     * @return
-//     */
-//    public PagedGridResult getOrdersTrend(String userId,
-//                                          Integer page,
-//                                          Integer pageSize);
+    /**
+     * 查询用户订单数
+     * @param userId
+     */
+    public OrderStatusCountsVO getOrderStatusCounts(String userId);
+
+    /**
+     * 获得分页的订单动向
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public PagedGridResult getOrdersTrend(String userId,
+                                          Integer page,
+                                          Integer pageSize);
 }

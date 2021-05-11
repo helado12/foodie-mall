@@ -5,6 +5,7 @@ import com.htr.pojo.Orders;
 import com.htr.pojo.Users;
 import com.htr.pojo.bo.center.CenterUserBO;
 //import com.htr.pojo.vo.OrderStatusCountsVO;
+import com.htr.pojo.vo.OrderStatusCountsVO;
 import com.htr.resource.FileUpload;
 import com.htr.service.center.CenterUserService;
 import com.htr.service.center.MyOrdersService;
@@ -41,22 +42,22 @@ public class MyOrdersController extends BaseController {
     @Autowired
     private MyOrdersService myOrdersService;
 
-//    @ApiOperation(value = "获得订单状态数概况", notes = "获得订单状态数概况", httpMethod = "POST")
-//    @PostMapping("/statusCounts")
-//    public HtrJSONResult statusCounts(
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId) {
-//
-//        if (StringUtils.isBlank(userId)) {
-//            return HtrJSONResult.errorMsg(null);
-//        }
-//
-//        OrderStatusCountsVO result = myOrdersService.getOrderStatusCounts(userId);
-//
-//        return HtrJSONResult.ok(result);
-//    }
+    @ApiOperation(value = "obtain number of orders in each status", notes = "obtain number of orders in each status", httpMethod = "POST")
+    @PostMapping("/statusCounts")
+    public HtrJSONResult statusCounts(
+            @ApiParam(name = "userId", value = "userId", required = true)
+            @RequestParam String userId) {
 
-    @ApiOperation(value = "查询订单列表", notes = "查询订单列表", httpMethod = "POST")
+        if (StringUtils.isBlank(userId)) {
+            return HtrJSONResult.errorMsg(null);
+        }
+
+        OrderStatusCountsVO result = myOrdersService.getOrderStatusCounts(userId);
+
+        return HtrJSONResult.ok(result);
+    }
+
+    @ApiOperation(value = "query order list", notes = "query order list", httpMethod = "POST")
     @PostMapping("/query")
     public HtrJSONResult query(
             @ApiParam(name = "userId", value = "userId", required = true)
@@ -158,31 +159,31 @@ public class MyOrdersController extends BaseController {
 //        return HtrJSONResult.ok();
 //    }
 //
-//    @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
-//    @PostMapping("/trend")
-//    public HtrJSONResult trend(
-//            @ApiParam(name = "userId", value = "用户id", required = true)
-//            @RequestParam String userId,
-//            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
-//            @RequestParam Integer page,
-//            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
-//            @RequestParam Integer pageSize) {
-//
-//        if (StringUtils.isBlank(userId)) {
-//            return HtrJSONResult.errorMsg(null);
-//        }
-//        if (page == null) {
-//            page = 1;
-//        }
-//        if (pageSize == null) {
-//            pageSize = COMMON_PAGE_SIZE;
-//        }
-//
-//        PagedGridResult grid = myOrdersService.getOrdersTrend(userId,
-//                page,
-//                pageSize);
-//
-//        return HtrJSONResult.ok(grid);
-//    }
+    @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
+    @PostMapping("/trend")
+    public HtrJSONResult trend(
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "分页的每一页显示的条数", required = false)
+            @RequestParam Integer pageSize) {
+
+        if (StringUtils.isBlank(userId)) {
+            return HtrJSONResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = COMMON_PAGE_SIZE;
+        }
+
+        PagedGridResult grid = myOrdersService.getOrdersTrend(userId,
+                page,
+                pageSize);
+
+        return HtrJSONResult.ok(grid);
+    }
 
 }
