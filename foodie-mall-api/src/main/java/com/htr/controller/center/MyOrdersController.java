@@ -146,17 +146,17 @@ public class MyOrdersController extends BaseController {
 
 
 
-    /**
-     * 用于验证用户和订单是否有关联关系，避免非法用户调用
-     * @return
-     */
-    private HtrJSONResult checkUserOrder(String userId, String orderId) {
-        Orders order = myOrdersService.queryMyOrder(userId, orderId);
-        if (order == null) {
-            return HtrJSONResult.errorMsg("Order does not exist！");
-        }
-        return HtrJSONResult.ok();
-    }
+//    /**
+//     * 用于验证用户和订单是否有关联关系，避免非法用户调用
+//     * @return
+//     */
+//    private HtrJSONResult checkUserOrder(String userId, String orderId) {
+//        Orders order = myOrdersService.queryMyOrder(userId, orderId);
+//        if (order == null) {
+//            return HtrJSONResult.errorMsg("Order does not exist！");
+//        }
+//        return HtrJSONResult.ok();
+//    }
 //
 //    @ApiOperation(value = "查询订单动向", notes = "查询订单动向", httpMethod = "POST")
 //    @PostMapping("/trend")
