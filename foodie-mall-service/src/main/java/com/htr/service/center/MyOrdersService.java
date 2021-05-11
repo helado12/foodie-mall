@@ -1,25 +1,25 @@
-//package com.htr.service.center;
-//
-//import com.imooc.pojo.Orders;
-//import com.imooc.pojo.vo.OrderStatusCountsVO;
-//import com.imooc.utils.PagedGridResult;
-//
-//public interface MyOrdersService {
-//
-//    /**
-//     * 查询我的订单列表
-//     *
-//     * @param userId
-//     * @param orderStatus
-//     * @param page
-//     * @param pageSize
-//     * @return
-//     */
-//    public PagedGridResult queryMyOrders(String userId,
-//                                         Integer orderStatus,
-//                                         Integer page,
-//                                         Integer pageSize);
-//
+package com.htr.service.center;
+
+import com.htr.pojo.Orders;
+//import com.htr.pojo.vo.OrderStatusCountsVO;
+import com.htr.utils.PagedGridResult;
+
+public interface MyOrdersService {
+
+    /**
+     * 查询我的订单列表
+     *
+     * @param userId
+     * @param orderStatus
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public PagedGridResult queryMyOrders(String userId,
+                                         Integer orderStatus,
+                                         Integer page,
+                                         Integer pageSize);
+
 //    /**
 //     * @Description: 订单状态 --> 商家发货
 //     */
@@ -65,4 +65,4 @@
 //    public PagedGridResult getOrdersTrend(String userId,
 //                                          Integer page,
 //                                          Integer pageSize);
-//}
+}
