@@ -16,7 +16,7 @@ server:
 ############################################################
 spring:
   profiles:
-    active: prod
+    active: dev
   datasource:                                           # 数据源的相关配置
     type: com.zaxxer.hikari.HikariDataSource          # 数据源类型：HikariCP
     driver-class-name: com.mysql.jdbc.Driver          # mysql驱动
@@ -36,6 +36,9 @@ spring:
     multipart:
       max-file-size: 5120000     # 文件上传大小限制为500kb
       max-request-size: 5120000  # 请求大小限制为500kb
+  session:
+    store-type: redis
+
 
 mybatis:
   type-aliases-package: com.htr.pojo          # 所有POJO类所在包路径

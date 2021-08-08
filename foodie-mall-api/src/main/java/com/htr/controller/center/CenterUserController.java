@@ -4,6 +4,7 @@ import com.htr.controller.BaseController;
 import com.htr.pojo.Users;
 import com.htr.pojo.bo.center.CenterUserBO;
 //import com.htr.resource.FileUpload;
+import com.htr.pojo.vo.UsersVo;
 import com.htr.resource.FileUpload;
 import com.htr.service.UserService;
 import com.htr.service.center.CenterUserService;
@@ -129,11 +130,12 @@ public class CenterUserController extends BaseController {
         // 更新用户头像到数据库
         Users userResult = centerUserService.updateUserFace(userId, finalUserFaceUrl);
 
-        userResult = setNullProperty(userResult);
-        CookieUtils.setCookie(request, response, "user",
-                JsonUtils.objectToJson(userResult), true);
+        //增加令牌token，会整合进redis，分布式会话
+        UsersVo usersVo = convertUsersVo(userResult);
 
-//        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
+//        userResult = setNullProperty(userResult);
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(usersVo), true);
 
         return HtrJSONResult.ok();
     }
@@ -159,12 +161,13 @@ public class CenterUserController extends BaseController {
 
         Users userResult = centerUserService.updateUserInfo(userId, centerUserBO);
 
-        userResult = setNullProperty(userResult);
+//        userResult = setNullProperty(userResult);
+
+        //增加令牌token，会整合进redis，分布式会话
+        UsersVo usersVo = convertUsersVo(userResult);
+
         CookieUtils.setCookie(request, response, "user",
-                JsonUtils.objectToJson(userResult), true);
-
-        // TODO 后续要改，增加令牌token，会整合进redis，分布式会话
-
+                JsonUtils.objectToJson(usersVo), true);
         return HtrJSONResult.ok();
     }
 

@@ -3,12 +3,17 @@ package com.htr.controller;
 //import com.htr.pojo.Orders;
 //import com.htr.service.center.MyOrdersService;
 import com.htr.pojo.Orders;
+import com.htr.pojo.Users;
+import com.htr.pojo.vo.UsersVo;
 import com.htr.service.center.MyOrdersService;
 import com.htr.utils.HtrJSONResult;
+import com.htr.utils.RedisOperator;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.util.UUID;
 
 @Controller
 public class BaseController {
@@ -17,6 +22,11 @@ public class BaseController {
 
     public static final Integer COMMON_PAGE_SIZE = 10;
     public static final Integer PAGE_SIZE = 20;
+
+    public static final String REDIS_USER_TOKEN = "redis_user_token";
+
+    @Autowired
+    private RedisOperator redisOperator;
 
     // 支付中心的调用地址
     String paymentUrl = "http://payment.t.mukewang.com/foodie-payment/payment/createMerchantOrder";		// produce
@@ -47,5 +57,17 @@ public class BaseController {
             return HtrJSONResult.errorMsg("Order does not exist！");
         }
         return HtrJSONResult.ok(order);
+    }
+
+    public UsersVo convertUsersVo(Users userResult){
+        //生成用户token，存入redis会话
+        String uniqueToken = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + userResult.getId(),
+                uniqueToken);
+
+        UsersVo usersVo = new UsersVo();
+        BeanUtils.copyProperties(userResult, usersVo);
+        usersVo.setUserUniqueToken(uniqueToken);
+        return usersVo;
     }
 }
