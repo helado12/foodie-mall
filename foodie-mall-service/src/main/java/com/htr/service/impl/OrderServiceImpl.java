@@ -7,6 +7,7 @@ import com.htr.mapper.OrderItemsMapper;
 import com.htr.mapper.OrderStatusMapper;
 import com.htr.mapper.OrdersMapper;
 import com.htr.pojo.*;
+import com.htr.pojo.bo.ShopcartBO;
 import com.htr.pojo.bo.SubmitOrderBO;
 import com.htr.pojo.vo.MerchantOrdersVO;
 import com.htr.pojo.vo.OrderVO;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(List<ShopcartBO> shopcartList, SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -86,9 +88,13 @@ public class OrderServiceImpl implements OrderService {
         String itemSpecIdArr[] = itemSpecIds.split(",");
         Integer totalAmount = 0;
         Integer realPayAmount = 0;
+        List<ShopcartBO> toBeRemovedShopcatList = new ArrayList<>();
         for (String itemSpecId: itemSpecIdArr){
             // TODO obtain number of each items in the shopping cart from shopping cart in redis
-            int buyCounts = 1;
+            ShopcartBO cartItem = getBuyCountsFromShopcart(shopcartList, itemSpecId);
+            int buyCounts = cartItem.getBuyCounts();
+            toBeRemovedShopcatList.add(cartItem);
+
             ItemsSpec itemSpec = itemService.queryItemSpecById(itemSpecId);
             totalAmount += itemSpec.getPriceNormal() * buyCounts;
             realPayAmount += itemSpec.getPriceDiscount() * buyCounts;
@@ -138,8 +144,18 @@ public class OrderServiceImpl implements OrderService {
         OrderVO orderVO = new OrderVO();
         orderVO.setOrderId(orderId);
         orderVO.setMerchantOrdersVO(merchantOrdersVO);
+        orderVO.setGetToBeRemovedShopcatList(toBeRemovedShopcatList);
 
         return orderVO;
+    }
+
+    private ShopcartBO getBuyCountsFromShopcart(List<ShopcartBO> shopcartList, String specId){
+        for (ShopcartBO cart: shopcartList){
+            if (cart.getSpecId().equals(specId)){
+                return cart;
+            }
+        }
+        return null;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

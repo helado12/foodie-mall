@@ -5,14 +5,13 @@ import com.htr.enums.PayMethod;
 import com.htr.pojo.OrderStatus;
 import com.htr.pojo.UserAddress;
 import com.htr.pojo.bo.AddressBO;
+import com.htr.pojo.bo.ShopcartBO;
 import com.htr.pojo.bo.SubmitOrderBO;
 import com.htr.pojo.vo.MerchantOrdersVO;
 import com.htr.pojo.vo.OrderVO;
 import com.htr.service.AddressService;
 import com.htr.service.OrderService;
-import com.htr.utils.CookieUtils;
-import com.htr.utils.HtrJSONResult;
-import com.htr.utils.MobileEmailUtils;
+import com.htr.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -37,8 +36,12 @@ public class OrdersController extends BaseController{
 
     @Autowired
     private OrderService orderService;
+
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private RedisOperator redisOperator;
 
     @ApiOperation(value = "user placing order", notes = "user placing order", httpMethod = "POST")
     @PostMapping("/create")
@@ -50,13 +53,23 @@ public class OrdersController extends BaseController{
             && submitOrderBO.getPayMethod() != PayMethod.ALIPAY.type){
             return  HtrJSONResult.errorMsg("Payment method not supported");
         }
+
+        String shopcartJson = redisOperator.get(FOODIE_SHOPCART + ":" + submitOrderBO.getUserId());
+        if (StringUtils.isBlank(shopcartJson)){
+            return HtrJSONResult.errorMsg("Shopping cart data is not correc");
+        }
+
+        List<ShopcartBO> shopcartList = JsonUtils.jsonToList(shopcartJson, ShopcartBO.class);
+
         //1. create order
-        OrderVO orderVO = orderService.createOrder(submitOrderBO);
+        OrderVO orderVO = orderService.createOrder(shopcartList, submitOrderBO);
         String orderId = orderVO.getOrderId();
 
         //2. remove already bought items from shopping cart
-        //TODO remove shoppping cart already bought items from redis shopping cart
-//        CookieUtils.setCookie(request, response, FOODIE_SHOPCART, "", true);
+        //remove shoppping cart already bought items from redis shopping cart
+        CookieUtils.setCookie(request, response, FOODIE_SHOPCART, JsonUtils.objectToJson(shopcartList), true);
+        shopcartList.removeAll(orderVO.getGetToBeRemovedShopcatList());
+        redisOperator.set(FOODIE_SHOPCART + ":" + submitOrderBO.getUserId(), JsonUtils.objectToJson(shopcartList));
 
         //3.send current order to payment center
         MerchantOrdersVO merchantOrdersVO = orderVO.getMerchantOrdersVO();
