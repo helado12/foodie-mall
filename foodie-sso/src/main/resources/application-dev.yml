@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8090
 
 spring:
   datasource:                                           # 数据源的相关配置
@@ -7,7 +7,7 @@ spring:
     password: 804232452
   redis:
     database: 1
-    host: 132.145.48.17
+    host: 140.238.64.24
     port: 6379
     password: 804232452
 

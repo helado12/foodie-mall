@@ -3,6 +3,10 @@ server:
 
 spring:
   datasource:                                           # 数据源的相关配置
-    url: jdbc:mysql://140.238.64.24:3306/foodie_shop?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    url: jdbc:mysql://132.145.48.17:3306/foodie_shop?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
     password: 804232452Aa*
-
+  redis:
+    database: 1
+    host: 132.145.48.17
+    port: 6379
+    password: 804232452
